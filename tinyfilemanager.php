@@ -2183,55 +2183,44 @@ $tableTheme = (FM_THEME == "dark") ? "text-white bg-dark table-dark" : "bg-white
                                href="?p=<?php echo urlencode(FM_PATH) ?>&amp;copy=<?php echo urlencode(trim(FM_PATH . '/' . $f, '/')) ?>"><i class="fa fa-files-o"></i></a>
                         <?php endif; ?>
                         <a class="directLink" data-type="file" title="<?php echo lng('DirectLink') ?>" href="<?php echo fm_enc(FM_ROOT_URL . (FM_PATH != '' ? '/' . FM_PATH : '') . '/' . $f) ?>" target="_blank" ><i class="fa fa-link"></i></a>
-                    
-                        <script>
-                            // Functions
-                        
-                            /**
-                             * Direct link langsung copy ke clipboard
-                             */
-                            function copyToClipboard(text) {
-                                var dummy = document.createElement("textarea");
-                                document.body.appendChild(dummy);
-                                dummy.value = text;
-                                dummy.select();
-                                document.execCommand("copy");
-                                document.body.removeChild(dummy);
+                    <script>
+                        // Functions
+
+                        /**
+                         * Direct link langsung copy ke clipboard
+                         */
+                        function copyToClipboard(text) {
+                            var dummy = document.createElement("textarea");
+                            document.body.appendChild(dummy);
+                            dummy.value = text;
+                            dummy.select();
+                            document.execCommand("copy");
+                            document.body.removeChild(dummy);
+                        }
+
+                        // Event listener for folder and file links
+                        function handleClick(event) {
+                            event.preventDefault();
+
+                            var directLink = this.href;
+                            copyToClipboard(directLink);
+
+                            var fileType = this.getAttribute('data-type');
+                            alert("Link copied to clipboard (Type: " + fileType + "): " + directLink);
+                        }
+
+                        // Event listener for all links
+                        var directLinks = document.querySelectorAll('.directLink');
+                        directLinks.forEach(function(link) {
+                            // Add click event listener only if not added before
+                            if (!link.hasAttribute('data-listener-added')) {
+                                link.addEventListener('click', handleClick);
+                                link.setAttribute('data-listener-added', 'true');
                             }
-                        
-                            // Event listener for folder and file links
-                            var directLinksAdded = false; // Menandakan apakah event listener sudah ditambahkan
-                            function addDirectLinkListener() {
-                                if (!directLinksAdded) {
-                                    var directLinks = document.querySelectorAll('.directLink');
-                                    directLinks.forEach(function (link) {
-                                        link.addEventListener('click', function (event) {
-                                            event.preventDefault();
-                        
-                                            // Memeriksa apakah tautan tersebut sudah memiliki atribut data-copied
-                                            if (!link.getAttribute('data-copied')) {
-                                                var directLink = link.href;
-                                                copyToClipboard(directLink);
-                        
-                                                var fileType = link.getAttribute('data-type');
-                                                alert("Link copied to clipboard (Type: " + fileType + "): " + directLink);
-                        
-                                                // Menambahkan atribut data-copied ke tautan agar tidak diproses lagi
-                                                link.setAttribute('data-copied', 'true');
-                                            }
-                                        });
-                                    });
-                                    directLinksAdded = true; // Menandakan bahwa event listener sudah ditambahkan
-                                }
-                            }
-                        
-                            // Memanggil fungsi untuk menambahkan event listener ketika dokumen selesai dimuat
-                            document.addEventListener("DOMContentLoaded", function () {
-                                addDirectLinkListener();
-                            });
-                        </script>
+                        });
 
 
+                    </script>
                         <a title="<?php echo lng('Download') ?>" href="?p=<?php echo urlencode(FM_PATH) ?>&amp;dl=<?php echo urlencode($f) ?>" onclick="confirmDailog(event, 1211, '<?php echo lng('Download'); ?>','<?php echo urlencode($f); ?>', this.href);"><i class="fa fa-download"></i></a>
                     </td>
                 </tr>
