@@ -1,6 +1,6 @@
 <?php
 //Default Configuration
-$CONFIG = '{"lang":"en","error_reporting":false,"show_hidden":false,"hide_Cols":false,"theme":"light"}';
+$CONFIG = '{"lang":"id","error_reporting":true,"show_hidden":false,"hide_Cols":true,"theme":"light"}';
 
 /**
  * H3K | Tiny File Manager V2.5.3
@@ -14,7 +14,7 @@ $CONFIG = '{"lang":"en","error_reporting":false,"show_hidden":false,"hide_Cols":
 define('VERSION', '2.5.3');
 
 //Application Title
-define('APP_TITLE', 'Tiny File Manager');
+define('APP_TITLE', 'Cloud File Manager');
 
 // --- EDIT BELOW CONFIGURATION CAREFULLY ---
 
@@ -34,7 +34,8 @@ $auth_users = array(
 // Readonly users
 // e.g. array('users', 'guest', ...)
 $readonly_users = array(
-    'user'
+    'user',
+    'admin'
 );
 
 // Global readonly, including when auth is not being used
@@ -200,7 +201,8 @@ define('FM_THEME', $theme);
 
 //available languages
 $lang_list = array(
-    'en' => 'English'
+    'en' => 'English',
+    'id' => 'Bahasa'
 );
 
 if ($report_errors == true) {
@@ -355,12 +357,7 @@ if ($use_auth) {
                                 <form class="form-signin" action="" method="post" autocomplete="off">
                                     <div class="mb-3">
                                        <div class="brand">
-                                            <svg version="1.0" xmlns="http://www.w3.org/2000/svg" M1008 width="100%" height="80px" viewBox="0 0 238.000000 140.000000" aria-label="H3K Tiny File Manager">
-                                                <g transform="translate(0.000000,140.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
-                                                    <path d="M160 700 l0 -600 110 0 110 0 0 260 0 260 70 0 70 0 0 -260 0 -260 110 0 110 0 0 600 0 600 -110 0 -110 0 0 -260 0 -260 -70 0 -70 0 0 260 0 260 -110 0 -110 0 0 -600z"/>
-                                                    <path fill="#003500" d="M1008 1227 l-108 -72 0 -117 0 -118 110 0 110 0 0 110 0 110 70 0 70 0 0 -180 0 -180 -125 0 c-69 0 -125 -3 -125 -6 0 -3 23 -39 52 -80 l52 -74 73 0 73 0 0 -185 0 -185 -70 0 -70 0 0 115 0 115 -110 0 -110 0 0 -190 0 -190 181 0 181 0 109 73 108 72 1 181 0 181 -69 48 -68 49 68 50 69 49 0 249 0 248 -182 -1 -183 0 -107 -72z"/>
-                                                    <path d="M1640 700 l0 -600 110 0 110 0 0 208 0 208 35 34 35 34 35 -34 35 -34 0 -208 0 -208 110 0 110 0 0 212 0 213 -87 87 -88 88 88 88 87 87 0 213 0 212 -110 0 -110 0 0 -208 0 -208 -70 -69 -70 -69 0 277 0 277 -110 0 -110 0 0 -600z"/></g>
-                                            </svg>
+                                            <img src="/cloud.png" height="80px" alt="">
                                         </div>
                                         <div class="text-center">
                                             <h1 class="card-title"><?php echo APP_TITLE; ?></h1>
@@ -391,7 +388,7 @@ if ($use_auth) {
                         </div>
                         <div class="footer text-center">
                             &mdash;&mdash; &copy;
-                            <a href="https://tinyfilemanager.github.io/" target="_blank" class="text-decoration-none text-muted" data-version="<?php echo VERSION; ?>">CCP Programmers</a> &mdash;&mdash;
+                            <a href="/" target="_blank" class="text-decoration-none text-muted" data-version="<?php echo VERSION; ?>">Annubiz System</a> &mdash;&mdash;
                         </div>
                     </div>
                 </div>
@@ -2113,9 +2110,10 @@ $tableTheme = (FM_THEME == "dark") ? "text-white bg-dark table-dark" : "bg-white
                             <a title="<?php echo lng('Rename')?>" href="#" onclick="rename('<?php echo fm_enc(addslashes(FM_PATH)) ?>', '<?php echo fm_enc(addslashes($f)) ?>');return false;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                             <a title="<?php echo lng('CopyTo')?>..." href="?p=&amp;copy=<?php echo urlencode(trim(FM_PATH . '/' . $f, '/')) ?>"><i class="fa fa-files-o" aria-hidden="true"></i></a>
                         <?php endif; ?>
-                        <a title="<?php echo lng('DirectLink')?>" href="<?php echo fm_enc(FM_ROOT_URL . (FM_PATH != '' ? '/' . FM_PATH : '') . '/' . $f . '/') ?>" target="_blank"><i class="fa fa-link" aria-hidden="true"></i></a>
+                        <a class="directLink" data-type="folder" title="<?php echo lng('DirectLink')?>" href="<?php echo fm_enc(FM_ROOT_URL . (FM_PATH != '' ? '/' . FM_PATH : '') . '/' . $f . '/') ?>" target="_blank"><i class="fa fa-link" aria-hidden="true"></i></a>
                     </td>
                 </tr>
+
                 <?php
                 flush();
                 $ii++;
@@ -2184,7 +2182,56 @@ $tableTheme = (FM_THEME == "dark") ? "text-white bg-dark table-dark" : "bg-white
                             <a title="<?php echo lng('CopyTo') ?>..."
                                href="?p=<?php echo urlencode(FM_PATH) ?>&amp;copy=<?php echo urlencode(trim(FM_PATH . '/' . $f, '/')) ?>"><i class="fa fa-files-o"></i></a>
                         <?php endif; ?>
-                        <a title="<?php echo lng('DirectLink') ?>" href="<?php echo fm_enc(FM_ROOT_URL . (FM_PATH != '' ? '/' . FM_PATH : '') . '/' . $f) ?>" target="_blank"><i class="fa fa-link"></i></a>
+                        <a class="directLink" data-type="file" title="<?php echo lng('DirectLink') ?>" href="<?php echo fm_enc(FM_ROOT_URL . (FM_PATH != '' ? '/' . FM_PATH : '') . '/' . $f) ?>" target="_blank" ><i class="fa fa-link"></i></a>
+                    
+                        <script>
+                            // Functions
+                        
+                            /**
+                             * Direct link langsung copy ke clipboard
+                             */
+                            function copyToClipboard(text) {
+                                var dummy = document.createElement("textarea");
+                                document.body.appendChild(dummy);
+                                dummy.value = text;
+                                dummy.select();
+                                document.execCommand("copy");
+                                document.body.removeChild(dummy);
+                            }
+                        
+                            // Event listener for folder and file links
+                            var directLinksAdded = false; // Menandakan apakah event listener sudah ditambahkan
+                            function addDirectLinkListener() {
+                                if (!directLinksAdded) {
+                                    var directLinks = document.querySelectorAll('.directLink');
+                                    directLinks.forEach(function (link) {
+                                        link.addEventListener('click', function (event) {
+                                            event.preventDefault();
+                        
+                                            // Memeriksa apakah tautan tersebut sudah memiliki atribut data-copied
+                                            if (!link.getAttribute('data-copied')) {
+                                                var directLink = link.href;
+                                                copyToClipboard(directLink);
+                        
+                                                var fileType = link.getAttribute('data-type');
+                                                alert("Link copied to clipboard (Type: " + fileType + "): " + directLink);
+                        
+                                                // Menambahkan atribut data-copied ke tautan agar tidak diproses lagi
+                                                link.setAttribute('data-copied', 'true');
+                                            }
+                                        });
+                                    });
+                                    directLinksAdded = true; // Menandakan bahwa event listener sudah ditambahkan
+                                }
+                            }
+                        
+                            // Memanggil fungsi untuk menambahkan event listener ketika dokumen selesai dimuat
+                            document.addEventListener("DOMContentLoaded", function () {
+                                addDirectLinkListener();
+                            });
+                        </script>
+
+
                         <a title="<?php echo lng('Download') ?>" href="?p=<?php echo urlencode(FM_PATH) ?>&amp;dl=<?php echo urlencode($f) ?>" onclick="confirmDailog(event, 1211, '<?php echo lng('Download'); ?>','<?php echo urlencode($f); ?>', this.href);"><i class="fa fa-download"></i></a>
                     </td>
                 </tr>
@@ -2232,9 +2279,9 @@ $tableTheme = (FM_THEME == "dark") ? "text-white bg-dark table-dark" : "bg-white
                     <a href="javascript:document.getElementById('a-copy').click();" class="btn btn-small btn-outline-primary btn-2"><i class="fa fa-files-o"></i> <?php echo lng('Copy') ?> </a></li>
             </ul>
         </div>
-        <div class="col-3 d-none d-sm-block"><a href="https://tinyfilemanager.github.io" target="_blank" class="float-right text-muted">Tiny File Manager <?php echo VERSION; ?></a></div>
+        <div class="col-3 d-none d-sm-block"><a href="" target="_blank" class="float-right text-muted">Fer-Bucket File Manager <?php echo VERSION; ?></a></div>
         <?php else: ?>
-            <div class="col-12"><a href="https://tinyfilemanager.github.io" target="_blank" class="float-right text-muted">Tiny File Manager <?php echo VERSION; ?></a></div>
+            <div class="col-12"><a href="/" target="_blank" class="float-right text-muted">Fer-Bucket File Manager <?php echo VERSION; ?></a></div>
         <?php endif; ?>
     </div>
 </form>
